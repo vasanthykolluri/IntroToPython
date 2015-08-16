@@ -1,0 +1,82 @@
+# template for "Stopwatch: The Game"
+
+import simplegui
+
+# define global variables
+time_in_tens_secs = 0
+successful_attempts = 0
+total_attempts = 0
+
+# define helper function format that converts time
+# in tenths of seconds into formatted string A:BC.D
+def format(t):
+    A = str(t / 600)
+    rem = (t % 600)
+    BC = (rem / 10)
+    B = str(BC / 10)
+    C = str(BC % 10)
+    D = str (rem % 10)
+    
+    return A + ":" + B + C + "." + D
+    pass
+    
+# define event handlers for buttons; "Start", "Stop", "Reset"
+def start_handler():
+    timer.start()
+    return
+
+def stop_handler():
+    global total_attempts
+    global successful_attempts
+    global time_in_tens_secs
+    
+    if (timer.is_running()):
+        total_attempts += 1
+        if ((time_in_tens_secs % 10) == 0):
+            successful_attempts += 1
+        timer.stop()
+    
+    return
+
+def reset_handler():
+    global time_in_tens_secs
+    global total_attempts
+    global successful_attempts
+    
+    if (timer.is_running()):
+        timer.stop()
+    
+    time_in_tens_secs = 0
+    total_attempts = 0
+    successful_attempts = 0
+    return
+
+# define event handler for timer with 0.1 sec interval
+def timer_handler():
+    global time_in_tens_secs
+    time_in_tens_secs += 1
+    return
+
+# define draw handler
+def draw_handler(canvas):
+    canvas.draw_text(format(time_in_tens_secs), (150,50), 20, 'Blue')
+    canvas.draw_text(str(successful_attempts) + "/" + str(total_attempts), (250,20), 15, 'Red')
+    return
+    
+# create frame
+frame = simplegui.create_frame("StopWatch", 300, 100)
+timer = simplegui.create_timer(100, timer_handler)
+
+frame.add_button("Start", start_handler, 100)
+frame.add_button("Stop", stop_handler, 100)
+frame.add_button("Reset", reset_handler, 100)
+
+# register event handlers
+frame.set_draw_handler(draw_handler)
+
+
+# start frame
+frame.start()
+
+# Please remember to review the grading rubric
+
